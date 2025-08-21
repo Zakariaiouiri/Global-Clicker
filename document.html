@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Clicker - ZakariaDev</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import {
+      getFirestore, doc, setDoc, updateDoc, onSnapshot, increment,
+      collection, serverTimestamp, deleteDoc
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhYCAhd5DRimUB8YPbYVKtvjZcBPf6O-A",
+      authDomain: "global-clicker-97117.firebaseapp.com",
+      projectId: "global-clicker-97117",
+      storageBucket: "global-clicker-97117.firebasestorage.app",
+      messagingSenderId: "418965457496",
+      appId: "1:418965457496:web:0daca4651effa76644582d",
+      measurementId: "G-77QCQ3N8N4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const DocRef = doc(db, "main", "CounterDoc");
+
+    let counter = 0;
+    let ADMIN_PASSWORD = "";
+
+    // --- Presence system ---
+    const presenceRef = doc(collection(db, "presence"));
+    async function addPresence() {
+      await setDoc(presenceRef, {
+        lastActive: serverTimestamp()
+      });
+    }
+    async function removePresence() {
+      await deleteDoc(presenceRef);
+    }
+    // heartbeat: update timestamp every 10s
+    setInterval(() => {
+      setDoc(presenceRef, { lastActive: serverTimestamp() });
+    }, 10000);
+
+    window.addEventListener("beforeunload", removePresence);
+
+    // --- Counter animation ---
+    function animateCounter(el, start, end, duration = 600) {
+      const startTime = performance.now();
+      function update(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const value = Math.floor(progress * (end - start) + start);
+        el.textContent = value.toLocaleString();
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const counterEl = document.getElementById("counter");
+      const resetBtn = document.getElementById("reset-btn");
+      const passwordInput = document.getElementById("reset-pass");
+      const onlineUserElement = document.getElementById("online-users");
+
+      // Add presence on page load
+      addPresence();
+
+      // Listen to counter + admin password
+      onSnapshot(DocRef, (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.ResetPass) ADMIN_PASSWORD = data.ResetPass;
+
+          const newVal = data.CounterVar;
+          animateCounter(counterEl, counter, newVal, 600);
+          counter = newVal;
+        } else {
+          setDoc(DocRef, { CounterVar: 0 });
+        }
+      });
+
+      // Listen for presence count
+      onSnapshot(collection(db, "presence"), (snapshot) => {
+        onlineUserElement.textContent = snapshot.size + " users online";
+      });
+
+      // Increase counter on click
+      counterEl.addEventListener("click", async () => {
+        counter++;
+        animateCounter(counterEl, counter - 1, counter, 200);
+        await updateDoc(DocRef, { CounterVar: counter });
+      });
+
+      // Reset logic
+      resetBtn.addEventListener("click", () => {
+        passwordInput.style.display = passwordInput.style.display === "none" ? "block" : "none";
+        passwordInput.focus();
+      });
+
+      passwordInput.addEventListener("keydown", async (e) => {
+        if (e.key === "Enter") {
+          if (passwordInput.value === ADMIN_PASSWORD) {
+            await updateDoc(DocRef, { CounterVar: 0 });
+            passwordInput.value = "";
+            passwordInput.style.display = "none";
+          } else {
+            alert("Incorrect password!");
+            passwordInput.value = "";
+          }
+        }
+      });
+    });
+  </script>
+
+
+</head>
+
+<body>
+  <div class="clicker-container">
+    <h1 class="greetings">Welcome to the Global Clicker!</h1>
+    <h4 class="sub-greeting">Click the number to increase!</h4>
+    <h4 id="online-users">0 users online</h4>
+
+    <h1 class="counter" id="counter">0</h1>
+
+    <button id="reset-btn">Reset Counter</button>
+    <input id="reset-pass" type="password" placeholder="Enter admin password" style="display:none;">
+
+    <div class="links"></div>
+  </div>
+</body>
+
+</html>

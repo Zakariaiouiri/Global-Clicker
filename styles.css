@@ -1,0 +1,171 @@
+/* Import Orbitron font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Orbitron', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(-45deg, #ff6a00, #ee0979, #00f260, #0575e6);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  color: #fff;
+  padding: 20px;
+}
+
+.clicker-container {
+  text-align: center;
+  background: rgba(0,0,0,0.3);
+  padding: 40px 60px;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.5);
+  max-width: 600px;
+  width: 100%;
+}
+
+.greetings {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+}
+
+.sub-greeting {
+  font-size: 1.1rem;
+  color: #f0f0f0aa;
+}
+
+#online-users {
+  color: rgb(2, 255, 2);
+  font-family: consolas, monospace;
+  font-weight: 600;
+  margin-bottom: 30px;
+  font-size: 1rem;
+}
+
+.counter {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  background: linear-gradient(90deg, #ffed00, #ff0055);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  word-wrap: break-word;
+}
+
+.counter:hover {
+  transform: scale(1.1);
+}
+
+button#reset-btn {
+  padding: 10px 25px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  background: #ff0055;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 10px #ff0055aa;
+  transition: all 0.3s ease;
+}
+
+button#reset-btn:hover {
+  background: #ff66aa;
+  transform: scale(1.05);
+}
+
+input#reset-pass {
+  margin-top: 10px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background: #fff;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+input#reset-pass:focus {
+  box-shadow: 0 0 10px #ff0055aa;
+}
+
+/* Background gradient animation */
+@keyframes gradientBG {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
+}
+
+/* ---------------- RESPONSIVENESS ---------------- */
+
+/* Small tablets / large phones */
+@media (max-width: 768px) {
+  .clicker-container {
+    padding: 30px 25px;
+  }
+
+  .greetings {
+    font-size: 1.6rem;
+  }
+
+  .sub-greeting {
+    font-size: 1rem;
+  }
+
+  .counter {
+    font-size: 3rem;
+  }
+
+  button#reset-btn {
+    padding: 8px 18px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .clicker-container {
+    padding: 20px 15px;
+    border-radius: 15px;
+  }
+
+  .greetings {
+    font-size: 1.3rem;
+  }
+
+  .sub-greeting {
+    font-size: 0.9rem;
+  }
+
+  .counter {
+    font-size: 2.2rem;
+  }
+
+  #online-users {
+    font-size: 0.9rem;
+  }
+
+  button#reset-btn {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  input#reset-pass {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+}
